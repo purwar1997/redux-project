@@ -15,7 +15,7 @@ const PostsList = () => {
     <section>
       <h2 className='text-2xl'>All posts</h2>
 
-      <div className='mt-8 space-y-3'>
+      <div className='mt-6 space-y-3'>
         {orderedPosts.map(post => (
           <PostExerpt key={post.id} post={post} />
         ))}

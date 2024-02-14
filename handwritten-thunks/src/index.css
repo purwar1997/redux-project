@@ -4,6 +4,12 @@
 
 @layer base {
     h1, h2, h3, h4 {
-        @apply text-gray-800
+        @apply text-gray-700
+    }
+}
+
+@layer components {
+    .action-btn {
+        @apply border border-gray-500 rounded px-4 py-1.5
     }
 }

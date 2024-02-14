@@ -8,6 +8,7 @@ import {
 import Layout from './components/Layout';
 import PostsList from './pages/PostsList';
 import AddPostForm from './pages/AddPostForm';
+import SinglePostPage from './pages/SinglePostPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -16,6 +17,7 @@ const router = createBrowserRouter(
 
       <Route path='posts'>
         <Route path='add' element={<AddPostForm />} />
+        <Route path=':postId' element={<SinglePostPage />} />
       </Route>
     </Route>
   )
