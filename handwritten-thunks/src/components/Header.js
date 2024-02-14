@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom';
 const Header = () => {
   return (
     <header className='bg-purple-600 h-20 px-20 flex justify-between items-center text-white'>
-      <h1 className='text-3xl font-medium'>
+      <h1 className='text-3xl text-white font-medium'>
         <Link to='.'>Redux</Link>
       </h1>
 

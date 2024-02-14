@@ -3,10 +3,12 @@ import { Outlet } from 'react-router-dom';
 
 const Layout = () => {
   return (
-    <main>
+    <>
       <Header />
-      <Outlet />
-    </main>
+      <main className='px-28 py-12'>
+        <Outlet />
+      </main>
+    </>
   );
 };
 
