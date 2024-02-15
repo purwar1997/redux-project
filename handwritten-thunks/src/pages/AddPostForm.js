@@ -50,7 +50,7 @@ const AddPostForm = () => {
           </select>
         </div>
 
-        <button className='ml-32 action-btn' type='button' onClick=''>
+        <button className='ml-32 btn-action' type='button' onClick=''>
           Save
         </button>
       </form>

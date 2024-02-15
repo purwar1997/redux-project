@@ -25,8 +25,8 @@ const SinglePostPage = () => {
       </article>
 
       <div className='mt-4 space-x-3'>
-        <button className='action-btn'>Edit</button>
-        <button className='action-btn'>Delete</button>
+        <button className='btn-action'>Edit</button>
+        <button className='btn-action'>Delete</button>
       </div>
     </section>
   );

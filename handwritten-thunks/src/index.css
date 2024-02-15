@@ -26,7 +26,7 @@
 }
 
 @layer components {
-    .action-btn {
+    .btn-action {
         @apply border border-gray-500 rounded px-5 py-1.5
     }
 
