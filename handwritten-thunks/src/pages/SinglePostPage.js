@@ -1,6 +1,6 @@
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { deletePost } from '../app/slices/postsSlice';
 import PostAuthor from '../components/PostAuthor';
 import TimeAgo from '../components/TimeAgo';
 import ReactionButtons from '../components/ReactionButtons';
@@ -9,7 +9,13 @@ const SinglePostPage = () => {
   const { postId } = useParams();
 
   const post = useSelector(state => state.posts.find(post => post.id === postId));
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const handleClick = () => {
+    dispatch(deletePost(postId));
+    navigate('/', { replace: true });
+  };
 
   if (!post) {
     return <h2 className='text-2xl'>Post not found!</h2>;
@@ -31,7 +37,9 @@ const SinglePostPage = () => {
           Edit
         </button>
 
-        <button className='btn-action'>Delete</button>
+        <button className='btn-action' onClick={handleClick}>
+          Delete
+        </button>
       </div>
     </section>
   );

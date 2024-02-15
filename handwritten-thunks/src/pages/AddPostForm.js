@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { addPost } from '../app/slices/postsSlice';
 
 const AddPostForm = () => {
   const [postTitle, setPostTitle] = useState('');
@@ -7,6 +9,15 @@ const AddPostForm = () => {
   const [postAuthor, setPostAuthor] = useState('');
 
   const users = useSelector(state => state.users);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const canSave = [postTitle, postContent, postAuthor].every(Boolean);
+
+  const handleClick = () => {
+    dispatch(addPost(postTitle, postContent, postAuthor));
+    navigate('/');
+  };
 
   return (
     <section>
@@ -50,7 +61,12 @@ const AddPostForm = () => {
           </select>
         </div>
 
-        <button className='ml-32 btn-action' type='button' onClick=''>
+        <button
+          className='ml-32 btn-action'
+          type='button'
+          disabled={!canSave}
+          onClick={handleClick}
+        >
           Save
         </button>
       </form>

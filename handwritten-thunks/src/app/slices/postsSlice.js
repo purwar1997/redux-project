@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, nanoid } from '@reduxjs/toolkit';
 import { sub } from 'date-fns';
 
 const initialState = [
@@ -97,7 +97,65 @@ const initialState = [
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
-  reducers: {},
+  reducers: {
+    addPost: {
+      prepare(title, content, user) {
+        return {
+          payload: {
+            id: nanoid(),
+            title,
+            content,
+            user,
+            date: new Date().toISOString(),
+            reactions: {
+              thumbsUp: 0,
+              wow: 0,
+              heart: 0,
+              rocket: 0,
+              coffee: 0,
+            },
+          },
+        };
+      },
+      reducer(state, action) {
+        state.push(action.payload);
+      },
+    },
+
+    updatePost(state, action) {
+      const { postId, postTitle, postContent, postAuthor } = action.payload;
+
+      const post = state.find(post => post.id === postId);
+
+      if (post) {
+        post.title = postTitle;
+        post.content = postContent;
+        post.user = postAuthor;
+        post.date = new Date().toISOString();
+      }
+    },
+
+    deletePost(state, action) {
+      const post = state.find(post => post.id === action.payload);
+      const index = state.findIndex(post => post.id === action.payload);
+
+      if (post) {
+        state.splice(index, 1);
+      }
+    },
+
+    addReaction(state, action) {
+      const { postId, reaction } = action.payload;
+
+      const post = state.find(post => post.id === postId);
+
+      if (post) {
+        post.reactions[reaction]++;
+      }
+    },
+  },
 });
+
+export const { addPost, updatePost, deletePost, addReaction } = postsSlice.actions;
 
 export default postsSlice.reducer;

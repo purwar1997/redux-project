@@ -1,16 +1,26 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { updatePost } from '../app/slices/postsSlice';
 
 const EditPostForm = () => {
   const { postId } = useParams();
 
   const post = useSelector(state => state.posts.find(post => post.id === postId));
   const users = useSelector(state => state.users);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [postTitle, setPostTitle] = useState(post?.title);
   const [postContent, setPostContent] = useState(post?.content);
   const [postAuthor, setPostAuthor] = useState(post?.user);
+
+  const canSave = [postTitle, postContent, postAuthor].every(Boolean);
+
+  const handleClick = () => {
+    dispatch(updatePost({ postId, postTitle, postContent, postAuthor }));
+    navigate(`/posts/${postId}`);
+  };
 
   if (!post) {
     return <h2 className='text-2xl'>Post not found!</h2>;
@@ -58,7 +68,12 @@ const EditPostForm = () => {
           </select>
         </div>
 
-        <button className='ml-32 btn-action' type='button'>
+        <button
+          className='ml-32 btn-action'
+          type='button'
+          disabled={!canSave}
+          onClick={handleClick}
+        >
           Save
         </button>
       </form>
