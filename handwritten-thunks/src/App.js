@@ -11,6 +11,7 @@ import AddPostForm from './pages/AddPostForm';
 import SinglePostPage from './pages/SinglePostPage';
 import EditPostForm from './pages/EditPostForm';
 import UsersList from './pages/UsersList';
+import UserPage from './pages/UserPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
 
       <Route path='users'>
         <Route index element={<UsersList />} />
+        <Route path=':userId' element={<UserPage />} />
       </Route>
     </Route>
   )
