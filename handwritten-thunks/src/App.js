@@ -10,6 +10,7 @@ import PostsList from './pages/PostsList';
 import AddPostForm from './pages/AddPostForm';
 import SinglePostPage from './pages/SinglePostPage';
 import EditPostForm from './pages/EditPostForm';
+import UsersList from './pages/UsersList';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,6 +21,10 @@ const router = createBrowserRouter(
         <Route path='add' element={<AddPostForm />} />
         <Route path=':postId' element={<SinglePostPage />} />
         <Route path=':postId/edit' element={<EditPostForm />} />
+      </Route>
+
+      <Route path='users'>
+        <Route index element={<UsersList />} />
       </Route>
     </Route>
   )
