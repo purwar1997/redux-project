@@ -12,6 +12,7 @@ import SinglePostPage from './pages/SinglePostPage';
 import EditPostForm from './pages/EditPostForm';
 import UsersList from './pages/UsersList';
 import UserPage from './pages/UserPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -28,6 +29,8 @@ const router = createBrowserRouter(
         <Route index element={<UsersList />} />
         <Route path=':userId' element={<UserPage />} />
       </Route>
+
+      <Route path='*' element={<NotFoundPage />} />
     </Route>
   )
 );
