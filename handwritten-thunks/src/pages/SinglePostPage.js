@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import PostAuthor from '../components/PostAuthor';
 import TimeAgo from '../components/TimeAgo';
 import ReactionButtons from '../components/ReactionButtons';
@@ -8,6 +9,7 @@ const SinglePostPage = () => {
   const { postId } = useParams();
 
   const post = useSelector(state => state.posts.find(post => post.id === postId));
+  const navigate = useNavigate();
 
   if (!post) {
     return <h2 className='text-2xl'>Post not found!</h2>;
@@ -25,7 +27,10 @@ const SinglePostPage = () => {
       </article>
 
       <div className='mt-4 space-x-3'>
-        <button className='btn-action'>Edit</button>
+        <button className='btn-action' onClick={() => navigate('edit')}>
+          Edit
+        </button>
+
         <button className='btn-action'>Delete</button>
       </div>
     </section>
