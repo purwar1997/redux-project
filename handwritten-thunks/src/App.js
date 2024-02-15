@@ -13,10 +13,11 @@ import EditPostForm from './pages/EditPostForm';
 import UsersList from './pages/UsersList';
 import UserPage from './pages/UserPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ErrorPage from './pages/ErrorPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path='/' element={<Layout />}>
+    <Route path='/' element={<Layout />} errorElement={<ErrorPage />}>
       <Route index element={<PostsList />} />
 
       <Route path='posts'>

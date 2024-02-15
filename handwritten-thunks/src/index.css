@@ -34,6 +34,10 @@
         @apply border border-gray-500 rounded px-5 py-1.5
     }
 
+    .btn-link {
+        @apply inline-block bg-purple-600 text-white px-6 py-3 rounded-full
+    }
+
     .form-control {
         @apply flex items-start gap-4
     }
