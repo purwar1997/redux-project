@@ -13,6 +13,10 @@ const initialState = [
     id: '3',
     name: 'Subhash Choudhary',
   },
+  {
+    id: '4',
+    name: 'Hitesh Choudhary',
+  },
 ];
 
 const usersSlice = createSlice({
