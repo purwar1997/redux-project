@@ -181,4 +181,42 @@ const handlers = [
       statusText: 'Post successfully deleted',
     });
   }),
+
+  http.put('/api/posts/:postId', async ({ request, params }) => {
+    const { reaction } = await request.json();
+    const { postId } = params;
+
+    const post = db.post.findFirst({ where: { id: { equals: postId } } });
+
+    if (!post) {
+      throw new HttpResponse(null, {
+        status: 404,
+        statusText: 'Post not found',
+      });
+    }
+
+    const updatedPost = db.post.update({
+      where: {
+        id: { equals: postId },
+      },
+      data: {
+        reactions: (prevReactions, post) =>
+          db.reaction.update({
+            where: {
+              id: { equals: post.reactions.id },
+            },
+            data: {
+              [reaction]: prevReactions[reaction] + 1,
+            },
+          }),
+      },
+    });
+
+    await delay(RESPONSE_DELAY_MS);
+
+    return HttpResponse.json(updatedPost, {
+      status: 200,
+      statusText: 'Reaction successfully added to post',
+    });
+  }),
 ];
