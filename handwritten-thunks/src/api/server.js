@@ -4,6 +4,7 @@ import { factory, primaryKey, oneOf, manyOf } from '@mswjs/data';
 import { http, delay, HttpResponse } from 'msw';
 import { setupWorker } from 'msw/browser';
 import { nanoid } from '@reduxjs/toolkit';
+import { parseISO, sub } from 'date-fns'; 
 
 const NUM_OF_USERS = 5;
 const POSTS_PER_USER = 4;
@@ -232,6 +233,65 @@ const handlers = [
       statusText: 'Users successfully fetched',
     });
   }),
+
+  http.get('/api/notifications', async ({ request }) => {
+    const url = new URL(request.url);
+    const since = url.searchParams.get('since');
+
+    const notifications = generateRandomNotifications(since);
+
+    await delay(RESPONSE_DELAY_MS);
+
+    return HttpResponse.json(notifications, {
+      status: 200,
+      statusText: 'Notifications successfully fetched',
+    });
+  }),
 ];
+
+const notificationTemplates = [
+  'liked your post',
+  'commented on your post',
+  'poked you',
+  'sent you a gift',
+  "is glad we're friends",
+  'says hi!',
+];
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(rng() * (max - min + 1) + min);
+}
+
+function getRandomValueFromArray(array) {
+  const randomIndex = getRandomInt(0, array.length - 1);
+  return array[randomIndex];
+}
+
+function generateRandomNotifications (since)  {
+  const now = new Date();
+  let pastDate;
+
+  if (since) {
+     pastDate = parseISO(since);
+  } else {
+    pastDate = sub(now, {minutes: 60});
+  }
+
+  const numOfNotifications = getRandomInt(1, 5);
+
+  const notifications = [...new Array(numOfNotifications)].map(() => {
+    return {
+      id: nanoid(),
+      message: getRandomValueFromArray(notificationTemplates),
+      user: getRandomValueFromArray(db.user.getAll()).id,
+      date: faker.date.between({ from: pastDate, to: now }).toISOString(),
+      isRead: false,
+    };
+  });
+
+  return notifications;
+};
 
 export const worker = setupWorker(...handlers);
