@@ -130,7 +130,7 @@ const handlers = [
 
     await delay(RESPONSE_DELAY_MS);
 
-    return HttpResponse.json(post, {
+    return HttpResponse.json(serializePost(post), {
       status: 200,
       statusText: 'Post successfully fetched',
     });
@@ -157,7 +157,7 @@ const handlers = [
 
     await delay(RESPONSE_DELAY_MS);
 
-    return HttpResponse.json(updatedPost, {
+    return HttpResponse.json(serializePost(updatedPost), {
       status: 200,
       statusText: 'Post successfully updated',
     });
@@ -179,13 +179,13 @@ const handlers = [
 
     await delay(RESPONSE_DELAY_MS);
 
-    return HttpResponse.json(deletedPost, {
+    return HttpResponse.json(serializePost(deletedPost), {
       status: 200,
       statusText: 'Post successfully deleted',
     });
   }),
 
-  http.put('/api/posts/:postId', async ({ request, params }) => {
+  http.put('/api/posts/:postId/reactions', async ({ request, params }) => {
     const { reaction } = await request.json();
     const { postId } = params;
 
@@ -217,7 +217,7 @@ const handlers = [
 
     await delay(RESPONSE_DELAY_MS);
 
-    return HttpResponse.json(updatedPost, {
+    return HttpResponse.json(serializePost(updatedPost), {
       status: 200,
       statusText: 'Reaction successfully added to post',
     });
