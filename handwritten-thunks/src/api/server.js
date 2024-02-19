@@ -2,6 +2,7 @@ import seedrandom from 'seedrandom';
 import { faker } from '@faker-js/faker';
 import { factory, primaryKey, oneOf, manyOf } from '@mswjs/data';
 import { http, delay, HttpResponse } from 'msw';
+import { setupWorker } from 'msw/browser';
 import { nanoid } from '@reduxjs/toolkit';
 
 const NUM_OF_USERS = 5;
@@ -14,9 +15,10 @@ const useSeededRNG = true;
 
 if (useSeededRNG) {
   let randomSeedString = localStorage.getItem('randomTimestampSeed');
+  let seedDate;
 
   if (randomSeedString) {
-    let seedDate = new Date(randomSeedString);
+    seedDate = new Date(randomSeedString);
   } else {
     seedDate = new Date();
     randomSeedString = seedDate.toISOString();
@@ -24,7 +26,7 @@ if (useSeededRNG) {
   }
 
   rng = seedrandom(randomSeedString);
-  faker.seed(seedDate.getItem());
+  faker.seed(seedDate.getTime());
 }
 
 const db = factory({
@@ -231,3 +233,5 @@ const handlers = [
     });
   }),
 ];
+
+export const worker = setupWorker(...handlers);
