@@ -177,6 +177,8 @@ const handlers = [
 
     const deletedPost = db.post.delete({ where: { id: { equals: postId } } });
 
+    db.reaction.delete({ where: { id: { equals: deletedPost.reactions.id } } });
+
     await delay(RESPONSE_DELAY_MS);
 
     return HttpResponse.json(serializePost(deletedPost), {
@@ -269,14 +271,14 @@ function getRandomValueFromArray(array) {
   return array[randomIndex];
 }
 
-function generateRandomNotifications (since)  {
+function generateRandomNotifications(since) {
   const now = new Date();
   let pastDate;
 
   if (since) {
-     pastDate = parseISO(since);
+    pastDate = parseISO(since);
   } else {
-    pastDate = sub(now, {minutes: 60});
+    pastDate = sub(now, { minutes: 60 });
   }
 
   const numOfNotifications = getRandomInt(1, 5);
