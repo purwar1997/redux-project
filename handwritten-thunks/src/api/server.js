@@ -219,4 +219,15 @@ const handlers = [
       statusText: 'Reaction successfully added to post',
     });
   }),
+
+  http.get('/api/users', async () => {
+    const users = db.user.getAll();
+
+    await delay(RESPONSE_DELAY_MS);
+
+    return HttpResponse.json(users, {
+      status: 200,
+      statusText: 'Users successfully fetched',
+    });
+  }),
 ];
