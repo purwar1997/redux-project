@@ -1,9 +1,12 @@
 import seedrandom from 'seedrandom';
 import { faker } from '@faker-js/faker';
 import { factory, primaryKey, oneOf, manyOf } from '@mswjs/data';
+import { http, delay, HttpResponse } from 'msw';
+import { nanoid } from '@reduxjs/toolkit';
 
 const NUM_OF_USERS = 5;
 const POSTS_PER_USER = 4;
+const RESPONSE_DELAY_MS = 2000;
 
 let rng = seedrandom();
 
@@ -26,13 +29,13 @@ if (useSeededRNG) {
 
 const db = factory({
   user: {
-    id: primaryKey(faker.string.uuid),
+    id: primaryKey(nanoid),
     name: String,
     username: String,
     posts: manyOf('post'),
   },
   post: {
-    id: primaryKey(faker.string.uuid),
+    id: primaryKey(nanoid),
     title: String,
     content: String,
     date: String,
@@ -40,7 +43,7 @@ const db = factory({
     reactions: oneOf('reaction'),
   },
   reaction: {
-    id: primaryKey(faker.string.uuid),
+    id: primaryKey(nanoid),
     thumbsUp: Number,
     wow: Number,
     heart: Number,
@@ -80,3 +83,102 @@ const serializePost = post => ({
   ...post,
   user: post.user.id,
 });
+
+const handlers = [
+  http.get('/api/posts', async () => {
+    const posts = db.post.getAll().map(serializePost);
+
+    await delay(RESPONSE_DELAY_MS);
+
+    return HttpResponse.json(posts, {
+      status: 200,
+      statusText: 'Posts successfully fetched',
+    });
+  }),
+
+  http.post('/api/posts', async ({ request }) => {
+    const data = await request.json();
+
+    data.date = new Date().toISOString();
+    data.user = db.user.findFirst({ where: { id: { equals: data.user } } });
+    data.reactions = db.reaction.create();
+
+    const newPost = db.post.create(data);
+
+    await delay(RESPONSE_DELAY_MS);
+
+    return HttpResponse.json(serializePost(newPost), {
+      status: 201,
+      statusText: 'Post successfully created',
+    });
+  }),
+
+  http.get('/api/posts/:postId', async ({ params }) => {
+    const { postId } = params;
+
+    const post = db.post.findFirst({ where: { id: { equals: postId } } });
+
+    if (!post) {
+      throw new HttpResponse(null, {
+        status: 404,
+        statusText: 'Post not found',
+      });
+    }
+
+    await delay(RESPONSE_DELAY_MS);
+
+    return HttpResponse.json(post, {
+      status: 200,
+      statusText: 'Post successfully fetched',
+    });
+  }),
+
+  http.put('/api/posts/:postId', async ({ request, params }) => {
+    const data = await request.json();
+
+    const { postId } = params;
+
+    const post = db.post.findFirst({ where: { id: { equals: postId } } });
+
+    if (!post) {
+      throw new HttpResponse(null, {
+        status: 404,
+        statusText: 'Post not found',
+      });
+    }
+
+    data.date = new Date().toISOString();
+    data.user = db.user.findFirst({ where: { id: { equals: data.user } } });
+
+    const updatedPost = db.post.update({ where: { id: { equals: postId } }, data });
+
+    await delay(RESPONSE_DELAY_MS);
+
+    return HttpResponse.json(updatedPost, {
+      status: 200,
+      statusText: 'Post successfully updated',
+    });
+  }),
+
+  http.delete('/api/posts/:postId', async ({ params }) => {
+    const { postId } = params;
+
+    const post = db.post.findFirst({ where: { id: { equals: postId } } });
+
+    if (!post) {
+      throw new HttpResponse(null, {
+        status: 404,
+        statusText: 'Post not found',
+      });
+    }
+
+    const deletedPost = db.post.delete({ where: { id: { equals: postId } } });
+
+    await delay(RESPONSE_DELAY_MS);
+
+    return HttpResponse.json(deletedPost, {
+      status: 200,
+      statusText: 'Post successfully deleted',
+    });
+  }),
+];
