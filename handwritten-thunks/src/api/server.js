@@ -65,10 +65,10 @@ const createUserData = () => {
 
 const createPostData = user => {
   return {
-    title: faker.lorem.words({ min: 3, max: 5 }),
+    title: faker.lorem.words(),
     content: faker.lorem.paragraph({ min: 5, max: 8 }),
-    date: faker.date.recent({ days: 30 }),
     user,
+    date: faker.date.recent({ days: 30 }),
     reactions: db.reaction.create(),
   };
 };
@@ -177,7 +177,9 @@ const handlers = [
 
     const deletedPost = db.post.delete({ where: { id: { equals: postId } } });
 
-    db.reaction.delete({ where: { id: { equals: deletedPost.reactions.id } } });
+    if (deletedPost) {
+      db.reaction.delete({ where: { id: { equals: deletedPost.reactions.id } } });
+    }
 
     await delay(RESPONSE_DELAY_MS);
 
